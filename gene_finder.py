@@ -120,7 +120,7 @@ def find_all_ORFs_oneframe(dna):
     >>> find_all_ORFs_oneframe("ATGCATGAAATGTGTAGATAGTGCCCATAA")
     ['ATGCATGAAATGTGTAGA']
     >>> find_all_ORFs_oneframe("ATGCATGAAATGTGTAGATAGTGCATGCCATAA")
-    ['ATGCATGAAATGTGTAGA','ATGCCA']
+    ['ATGCATGAAATGTGTAGA', 'ATGCCA']
     >>> find_all_ORFs_oneframe("ATGCATGAATGTAGATAGATGTGCCC")
     ['ATGCATGAATGTAGA', 'ATGTGCCC']
     >>> find_all_ORFs_oneframe("GATGCATGAATGTAGATAGATATGTGCCC")
@@ -186,6 +186,9 @@ def find_all_ORFs_both_strands(dna):
 
         dna: a DNA sequence
         returns: a list of non-nested ORFs
+
+        This test case makes sure that there are only non-nest
+        ORFs for both strands
     >>> find_all_ORFs_both_strands("ATGCGAATGTAGCATCAAA")
     ['ATGCGAATG', 'ATGCTACATTCGCAT']
     """
@@ -244,5 +247,5 @@ def gene_finder(dna):
 
 if __name__ == "__main__":
     import doctest
-    # doctest.testmod()
-    doctest.run_docstring_examples(find_all_ORFs_both_strands, globals())
+    doctest.testmod()
+    #doctest.run_docstring_examples(find_all_ORFs_both_strands, globals())
