@@ -2,7 +2,7 @@
 """
 YOUR HEADER COMMENT HERE
 
-@author: YOUR NAME HERE
+@author: Emily Lepert
 
 """
 
@@ -202,8 +202,14 @@ def longest_ORF(dna):
     >>> longest_ORF("ATGCGAATGTAGCATCAAA")
     'ATGCTACATTCGCAT'
     """
-    # TODO: implement this
-    pass
+    ORFs = find_all_ORFs_both_strands(dna)
+    length = 0
+    longest = ''
+    for i in ORFs:
+        if len(i) >= length:
+            longest = i
+            length = len(i)
+    return(longest)
 
 
 def longest_ORF_noncoding(dna, num_trials):
@@ -213,8 +219,15 @@ def longest_ORF_noncoding(dna, num_trials):
         dna: a DNA sequence
         num_trials: the number of random shuffles
         returns: the maximum length longest ORF """
-    # TODO: implement this
-    pass
+    i = 0
+    longest = 0
+    while i < num_trials:
+        new_dna = shuffle_string(dna)
+        current_longest = len(longest_ORF(new_dna))
+        if current_longest > longest:
+            longest = current_longest
+        i += 1
+    return(longest)
 
 
 def coding_strand_to_AA(dna):
@@ -247,5 +260,5 @@ def gene_finder(dna):
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()
-    #doctest.run_docstring_examples(find_all_ORFs_both_strands, globals())
+    #doctest.testmod()
+    doctest.run_docstring_examples(longest_ORF, globals())
