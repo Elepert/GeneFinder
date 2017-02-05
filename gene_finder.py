@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-YOUR HEADER COMMENT HERE
+Finds the protein sequence generated from a sequence of
+nucleotides.
 
 @author: Emily Lepert
 
@@ -53,7 +54,7 @@ def get_reverse_complement(dna):
         dna: a DNA sequence represented as a string
         returns: the reverse complementary DNA sequence represented as a string
 
-        I think that the unit tests that are currently written are sufficient
+        Current unit tests are sufficient
         because they are of different lengths and use all letters
     >>> get_reverse_complement("ATGCCCGCTTT")
     'AAAGCGGGCAT'
@@ -203,7 +204,9 @@ def longest_ORF(dna):
     'ATGCTACATTCGCAT'
     """
     ORFs = find_all_ORFs_both_strands(dna)
+    # keeps track of the length of the longest strand
     length = 0
+    # keeps track of the current longest strand
     longest = ''
     for i in ORFs:
         if len(i) >= length:
@@ -218,12 +221,18 @@ def longest_ORF_noncoding(dna, num_trials):
 
         dna: a DNA sequence
         num_trials: the number of random shuffles
-        returns: the maximum length longest ORF """
+        returns: the maximum length longest ORF
+        """
     i = 0
+    # keeps track of the longest ORF string
     longest = 0
+    # each loop is a new trial
     while i < num_trials:
-        new_dna = shuffle_string(dna)
-        current_longest = len(longest_ORF(new_dna))
+        # shuffle the string
+        shuffle = shuffle_string(dna)
+        # get the length of the longest string
+        current_longest = len(longest_ORF(shuffle))
+        # update the longest string length if necessary
         if current_longest > longest:
             longest = current_longest
         i += 1
@@ -239,13 +248,27 @@ def coding_strand_to_AA(dna):
         returns: a string containing the sequence of amino acids encoded by the
                  the input DNA fragment
 
+        We can add more tests that test for more of the codons
+        including stop codons
+        >>> coding_strand_to_AA("ATGTAAATGCATTGCGGT")
+        'M|MHCG'
+        >>> coding_strand_to_AA("ATGCCACGTACTGAGTTCATC")
+        'MPRTEFI'
         >>> coding_strand_to_AA("ATGCGA")
         'MR'
         >>> coding_strand_to_AA("ATGCCCGCTTT")
         'MPA'
     """
-    # TODO: implement this
-    pass
+    i = 0
+    protein = ''
+    while i < len(dna):
+        # if we're at the start of a codon and there is a full codon
+        if i % 3 == 0 and len(dna[i:i+3]) == 3:
+            # translate the codon to an amino acid
+            amino_acid = aa_table[dna[i:i+3]]
+            protein += amino_acid
+        i += 1
+    return(protein)
 
 
 def gene_finder(dna):
@@ -254,11 +277,22 @@ def gene_finder(dna):
         dna: a DNA sequence
         returns: a list of all amino acid sequences coded by the sequence dna.
     """
-    # TODO: implement this
-    pass
+    # find the longest ORF over 1500 trials
+    threshold = longest_ORF_noncoding(dna, 1500)
+    # find all the ORFs in this strand
+    ORF = find_all_ORFs_both_strands(dna)
+    amino_sequences = []
+    for i in ORF:
+        if len(i) >= threshold:
+            amino_sequences.append(coding_strand_to_AA(i))
+    return(amino_sequences)
+
+
+dna = load_seq("./data/X73525.fa")
+print(gene_finder(dna))
 
 
 if __name__ == "__main__":
     import doctest
     #doctest.testmod()
-    doctest.run_docstring_examples(longest_ORF, globals())
+    #doctest.run_docstring_examples(coding_strand_to_AA, globals())
